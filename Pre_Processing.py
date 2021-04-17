@@ -1,5 +1,7 @@
 import sklearn
 import pandas as pd
+from sklearn.impute import SimpleImputer
+import numpy as np
 
 class pre_processing:
     def __init__(self, path,thresh_hold):
@@ -35,32 +37,68 @@ class pre_processing:
         return pd.DataFrame(data)
 
     def clean_empty_cols_from_csv(self):
-        print("number of rows", len(self.df))
-        print("number of cols", len(self.df.columns))
-        column_mas = self.df.isnull().mean(axis=0) < self.thresh_hold
+
+        column_mas = self.df.isnull().mean(axis=0) < (self.thresh_hold+0.013)
         self.df =self.df.loc[:,column_mas]
-        print("number of rows", len(self.df))
-        print("number of cols", len(self.df.columns))
+
 
     def clean_empty_rows_from_csv(self):
-        print("number of rows", len(self.df))
-        print("number of cols", len(self.df.columns))
-        nulls_number = len(self.df.columns) * 0.5
+
+        nulls_number =int(len(self.df.columns) - len(self.df.columns) *0.6)
         self.df = self.df.dropna(axis=0,thresh=nulls_number)
-        print("number of rows", len(self.df))
-        print("number of cols", len(self.df.columns))
+
 
     def drop_duplicates(self):
-        print("number of rows", len(self.df))
-        print("number of cols", len(self.df.columns))
         self.df = self.df.drop_duplicates()
-        print("number of rows", len(self.df))
-        print("number of cols", len(self.df.columns))
+        # print("number of rows", len(self.df))
+        # print("number of cols", len(self.df.columns))
 
-    def clean_nulls_attributes_according_to_thresh_hold(self):
-        pass
+    def fill_missing_values(self):
+        imp = SimpleImputer(missing_values=np.NaN, strategy='median')
+        trans = imp.fit_transform(self.df)
+        self.df.fillna(self.df.median(), inplace=True)
+    def clean_cols_non_relevant(self,name):
+
+        self.df=self.df.drop(self.df.filter(regex=name).columns, axis=1)
+
+    def moving_to_binary_parameter(self):
+        self.df = self.df.replace(['negative'],0)
+        self.df = self.df.replace(['not_detected'], 0)
+        self.df = self.df.replace(['detected'], 1)
+        self.df = self.df.replace(['positive'], 1)
+    def clean_un_relevent_features(self):
+        self.clean_cols_non_relevant("index")
+        self.clean_cols_non_relevant("Bordetella pertussis")
+        self.clean_cols_non_relevant("Inf A H1N1 2009")
+        self.clean_cols_non_relevant("Respiratory Syncytial Virus")
+        self.clean_cols_non_relevant("Strepto")
+        self.clean_cols_non_relevant("Patient")
+        self.clean_cols_non_relevant("Urine")
+        self.clean_cols_non_relevant("fluenz")
+        self.clean_cols_non_relevant("virus")
 
     def clean_data(self):
-        self.drop_duplicates()
+        self.clean_un_relevent_features()
         self.clean_empty_cols_from_csv()
         self.clean_empty_rows_from_csv()
+        self.moving_to_binary_parameter()
+        self.fill_missing_values()
+        # print(self.df.columns)
+        # col =self.df["SARS-Cov-2 exam result"]
+        # count_zero=0
+        # count_one =0
+        # for c in col:
+        #    if c== 1:
+        #     count_one+=1
+        #    else:
+        #     count_zero+=1
+        # print("countzero",count_zero)
+        # print("countone", count_one)
+        self.df.reset_index(inplace=True,drop=True)
+        return self.df
+
+
+
+
+
+
