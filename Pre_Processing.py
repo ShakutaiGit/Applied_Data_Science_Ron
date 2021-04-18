@@ -33,7 +33,7 @@ class pre_processing:
 # tests compared with mean or median.
 #C:\\Users\\ronsh\\PycharmProjects\\pythonProject2\\Data\dataset\\Bloot_Test_dataset\\dataset.xlsx
     def read_data_csv(self):
-        data=pd.read_excel(self.path)
+        data = pd.read_excel(self.path, engine='openpyxl')
         return pd.DataFrame(data)
 
     def clean_empty_cols_from_csv(self):
