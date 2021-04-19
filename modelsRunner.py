@@ -1,3 +1,5 @@
+import warnings
+
 from Random_Forest import random_forest
 from Logistic_Regression import logistic_reg
 from XGBoost import xgboost
@@ -25,10 +27,9 @@ class models_runner:
     def run_models(self, explore):
         if explore:
             self.createNewFeature()
-        self.modelsDic["log_reg"] = logistic_reg(self.df, 0.8).split_to_train_test()
-        self.modelsDic["rf"] = random_forest(self.df, 0.8).split_to_train_test()
-        self.modelsDic["xg"] = xgboost(self.df, 0.8).split_to_train_test()
-        self.modelsDic["cat"] = catboost(self.df, 0.8).split_to_train_test()
-        self.modelsDic["light"] = lightGBM(self.df, 0.8).split_to_train_test()
-        return self.modelsDic
+        xgboost(self.df, 0.8).split_to_train_test()
+        logistic_reg(self.df, 0.8).split_to_train_test()
+        random_forest(self.df, 0.8).split_to_train_test()
+        catboost(self.df, 0.8).split_to_train_test()
+        lightGBM(self.df, 0.8).split_to_train_test()
 

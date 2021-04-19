@@ -6,7 +6,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 import numpy as np
 from xgboost import XGBClassifier
-
+import shap
+import matplotlib.pyplot as plt
 
 class catboost:
     def __init__(self, df, prec):
@@ -25,7 +26,7 @@ class catboost:
             train_data, val_data = X_train.iloc[train_idx], X_train.iloc[val_idx]
             y_train.reset_index(inplace=True, drop=True)
             train_target, val_target = y_train[train_idx], y_train[val_idx]
-            classifier = CatBoostClassifier()
+            classifier = CatBoostClassifier(verbose=False)
             cv_inner = StratifiedKFold(n_splits=5, random_state=7, shuffle=True)
             params = {
                 'iterations': [2, 4, 8],
@@ -43,7 +44,7 @@ class catboost:
 
 
         mean_best_parameters = self.get_top_values_dict(best_parameters)
-        model = CatBoostClassifier(max_depth=mean_best_parameters['iterations'], learning_rate=mean_best_parameters['learning_rate']).fit(X_train, y_train)
+        model = CatBoostClassifier(verbose=False,max_depth=mean_best_parameters['iterations'], learning_rate=mean_best_parameters['learning_rate']).fit(X_train, y_train)
         y_pred_prob = model.predict_proba(X_test)[:, 1]
         print("catboost")
         print("rocAUC", metrics.roc_auc_score(y_test, y_pred_prob))
@@ -57,7 +58,15 @@ class catboost:
         print('Sensitivity : ', sensitivity1)
         specificity1 = cm1[1, 1] / (cm1[1, 0] + cm1[1, 1])
         print('Specificity : ', specificity1)
-        return model
+        self.plotter_function(model, X_train, X_test)
+
+    def plotter_function(self, model, X_train, X_test):
+        # ploting Variable Importance Plot — Global Interpretability
+        shap_values = shap.TreeExplainer(model).shap_values(X_train)
+        shap.summary_plot(shap_values, X_train, plot_type="bar")
+        f = plt.figure()
+        shap_values = shap.TreeExplainer(model).shap_values(X_test)
+        shap.summary_plot(shap_values, X_test)
 
     def update_the_best_parameter(self,best_parameter,iter):
         for key in iter.keys():

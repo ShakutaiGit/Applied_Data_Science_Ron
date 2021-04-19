@@ -3,7 +3,8 @@ from sklearn.model_selection import KFold, StratifiedKFold, GridSearchCV, train_
 import tqdm as tqdm
 import numpy as np
 from lightgbm import LGBMClassifier
-
+import shap
+import matplotlib.pyplot as plt
 
 class lightGBM:
     def __init__(self, df, prec):
@@ -55,7 +56,16 @@ class lightGBM:
         print('Sensitivity : ', sensitivity1)
         specificity1 = cm1[1, 1] / (cm1[1, 0] + cm1[1, 1])
         print('Specificity : ', specificity1)
-        return model
+        self.plotter_function(model,X_train,X_test)
+
+    def plotter_function(self, model, X_train, X_test):
+        # ploting Variable Importance Plot — Global Interpretability
+        shap_values = shap.TreeExplainer(model).shap_values(X_train)
+        shap.summary_plot(shap_values[0], X_train, plot_type="bar")
+        f = plt.figure()
+        shap_values = shap.TreeExplainer(model).shap_values(X_test)
+        shap.summary_plot(shap_values[0], X_test)
+
     def update_the_best_parameter(self, best_parameter, iter):
         for key in iter.keys():
             value = iter[key]

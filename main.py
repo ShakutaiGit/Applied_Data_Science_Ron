@@ -10,17 +10,16 @@ from catBoost import catboost
 from LightGBM import lightGBM
 from modelsRunner import models_runner
 
-
+#C:\\Users\\Lenovo\\Desktop\\לימודים\\יישומית\\dataset\\Bloot Test dataset\\dataset.xlsx
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    path = "C:\\Users\\Lenovo\\Desktop\\לימודים\\יישומית\\dataset\\Bloot Test dataset\\dataset.xlsx"
+    path = r"C:\Users\ronsh\PycharmProjects\pythonProject2\Data\dataset\Bloot_Test_dataset\dataset.xlsx"
     pp = pre_processing(path, 0.95)
     pp.read_data_csv()
     clean_df = pp.clean_data()
     mr = models_runner(clean_df)
-    models_dict = mr.run_models(False)
-
-    # mr.run_models(True)
+    mr.run_models(False)
+    mr.run_models(True)
 
 
 
