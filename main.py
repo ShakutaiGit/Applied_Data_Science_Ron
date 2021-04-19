@@ -6,7 +6,9 @@ from Pre_Processing import pre_processing
 from Random_Forest import random_forest
 from Logistic_Regression import logistic_reg
 from XGBoost import xgboost
-
+from catBoost import catboost
+from LightGBM import lightGBM
+from modelsRunner import models_runner
 
 
 # Press the green button in the gutter to run the script.
@@ -15,8 +17,12 @@ if __name__ == '__main__':
     pp = pre_processing(path, 0.95)
     pp.read_data_csv()
     clean_df = pp.clean_data()
-    # cv = logistic_reg(clean_df, 0.8)
-    cv = xgboost(clean_df, 0.8)
-    # cv = random_forest(clean_df, 0.8)
-    cv.split_to_train_test()
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    mr = models_runner(clean_df)
+    mr.run_models(False)
+    # mr.run_models(True)
+
+
+
+
+
+
