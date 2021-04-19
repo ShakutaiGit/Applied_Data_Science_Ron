@@ -50,6 +50,7 @@ class logistic_reg:
         print('Sensitivity : ', sensitivity1)
         specificity1 = cm1[1, 1] / (cm1[1, 0] + cm1[1, 1])
         print('Specificity : ', specificity1)
+        return model
 
     def update_the_best_parameter(self,best_parameter,iter):
         for key in iter.keys():

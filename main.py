@@ -18,7 +18,8 @@ if __name__ == '__main__':
     pp.read_data_csv()
     clean_df = pp.clean_data()
     mr = models_runner(clean_df)
-    mr.run_models(False)
+    models_dict = mr.run_models(False)
+
     # mr.run_models(True)
 
 

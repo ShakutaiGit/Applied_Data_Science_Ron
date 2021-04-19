@@ -9,6 +9,11 @@ class models_runner:
     def __init__(self, df):
         self.df = df
         self.modelsDic = {}
+        self.modelsDic["log_reg"]=None
+        self.modelsDic["rf"] = None
+        self.modelsDic["xg"] = None
+        self.modelsDic["cat"] = None
+        self.modelsDic["light"] = None
 
     def createNewFeature(self):
         self.df["ratio_RBC_platelets"] = self.df["Red blood Cells"] / self.df["Platelets"]
@@ -20,14 +25,10 @@ class models_runner:
     def run_models(self, explore):
         if explore:
             self.createNewFeature()
-        # cv1 = logistic_reg(self.df, 0.8)
-        cv2 = xgboost(self.df, 0.8)
-        # cv3 = random_forest(self.df, 0.8)
-        # cv4 = catboost(self.df, 0.8)
-        # cv5 = lightGBM(self.df, 0.8)
-        # cv1.split_to_train_test()
-        cv2.split_to_train_test()
-        # cv3.split_to_train_test()
-        # cv4.split_to_train_test()
-        # cv5.split_to_train_test()
+        self.modelsDic["log_reg"] = logistic_reg(self.df, 0.8).split_to_train_test()
+        self.modelsDic["rf"] = random_forest(self.df, 0.8).split_to_train_test()
+        self.modelsDic["xg"] = xgboost(self.df, 0.8).split_to_train_test()
+        self.modelsDic["cat"] = catboost(self.df, 0.8).split_to_train_test()
+        self.modelsDic["light"] = lightGBM(self.df, 0.8).split_to_train_test()
+        return self.modelsDic
 

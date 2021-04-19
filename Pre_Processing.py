@@ -31,7 +31,7 @@ class pre_processing:
 # imputation technique to deal with. The “Iterative Imputer” technique
 # from Scikit-learn package [44] showed the best performance in experimental
 # tests compared with mean or median.
-#C:\\Users\\ronsh\\PycharmProjects\\pythonProject2\\Data\dataset\\Bloot_Test_dataset\\dataset.xlsx
+
     def read_data_csv(self):
         data = pd.read_excel(self.path, engine='openpyxl')
         return pd.DataFrame(data)
