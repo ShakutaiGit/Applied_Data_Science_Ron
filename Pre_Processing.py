@@ -1,7 +1,8 @@
 import sklearn
 import pandas as pd
-from sklearn.impute import SimpleImputer
 import numpy as np
+from sklearn.impute import SimpleImputer
+
 
 class pre_processing:
     def __init__(self, path,thresh_hold):
